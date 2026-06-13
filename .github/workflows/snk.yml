@@ -1,0 +1,17 @@
+name: snk
+
+on:
+  workflow_dispatch:
+
+jobs:
+  key:
+    runs-on: windows-latest
+    steps:
+      - name: Generate strong name key pair
+        run: sn -k keys.snk
+
+      - name: Upload the key pair
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: keys
+          path: keys.snk
