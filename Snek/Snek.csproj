@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
+    <IsPackable>true</IsPackable>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <GenerateDependencyFile>true</GenerateDependencyFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageIcon>favicon.png</PackageIcon>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <BuildOutputTargetFolder>tasks</BuildOutputTargetFolder>
+    <DevelopmentDependency>true</DevelopmentDependency>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../favicon.png" Pack="true" PackagePath="" Visible="false" />
+    <Content Include="Snek.props" Pack="true" PackagePath="build" />
+    <Content Include="Snek.snk" Pack="true" PackagePath="build" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSharpier.MSBuild" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Build.Framework" PrivateAssets="all" />
+    <PackageReference
+      Include="Microsoft.Build.Utilities.Core"
+      PrivateAssets="all"
+      ExcludeAssets="runtime"
+    >
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="PolyShim" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Embed package references inside this package -->
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>
+      $(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage
+    </TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <BuildOutputInPackage
+        Include="@(ReferenceCopyLocalPaths)"
+        TargetPath="%(ReferenceCopyLocalPaths.DestinationSubPath)"
+      />
+    </ItemGroup>
+  </Target>
+
+  <!-- Embed the generated deps.json file inside this package -->
+  <Target
+    Name="AddBuildDependencyFileToBuiltProjectOutputGroupOutput"
+    BeforeTargets="BuiltProjectOutputGroup"
+    Condition="$(GenerateDependencyFile)"
+  >
+    <ItemGroup>
+      <BuiltProjectOutputGroupOutput
+        Include="$(ProjectDepsFilePath)"
+        TargetPath="$(ProjectDepsFileName)"
+        FinalOutputPath="$(ProjectDepsFilePath)"
+      />
+    </ItemGroup>
+  </Target>
+</Project>

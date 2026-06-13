@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="CSharpier.MSBuild" Version="1.2.6" />
+    <PackageVersion Include="Microsoft.Build.Framework" Version="17.14.28" />
+    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.14.28" />
+    <PackageVersion Include="PolyShim" Version="2.11.0" />
+    <PackageVersion Include="System.Reflection.Metadata" Version="9.0.8" />
+  </ItemGroup>
+</Project>

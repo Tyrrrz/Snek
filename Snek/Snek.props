@@ -1,0 +1,9 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign>false</PublicSign>
+    <AssemblyOriginatorKeyFile Condition="'$(AssemblyOriginatorKeyFile)' == ''"
+      >$(MSBuildThisFileDirectory)/Snek.snk</AssemblyOriginatorKeyFile
+    >
+  </PropertyGroup>
+</Project>
