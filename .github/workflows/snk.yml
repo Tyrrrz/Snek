@@ -7,8 +7,23 @@ jobs:
   key:
     runs-on: windows-latest
     steps:
+      # Write to github actions output
+      - name: Locate sn.exe
+        id: locate-sn
+        shell: pwsh
+        run: |
+          $path = Get-ChildItem -Path "C:\Program Files (x86)\Microsoft SDKs\Windows" -Filter "sn.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+
+          if (-not $path) {
+              throw "Could not locate sn.exe"
+          }
+
+          Write-Output "path=$path" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -NoNewline
+
       - name: Generate strong name key pair
-        run: sn -k keys.snk
+        shell: pwsh
+        run: |
+          & "${{ steps.locate-sn.outputs.path }}" -k keys.snk
 
       - name: Upload the key pair
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
