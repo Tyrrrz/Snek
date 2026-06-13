@@ -53,7 +53,7 @@ You can then inspect the output assembly in **ILSpy** or a similar tool and see 
 ```
 
 > [!NOTE]
-> The public key token will be the same for all assemblies signed with Snek.
+> The public key token will be the same for all assemblies signed with **Snek**.
 > For the majority of use cases involving strong naming in modern .NET, this is sufficient.
 
 ## Etymology
