@@ -11,4 +11,8 @@
   <ItemGroup>
     <PackageReference Include="CSharpier.MSBuild" PrivateAssets="all" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Snek/Snek.csproj" />
+  </ItemGroup>
 </Project>
