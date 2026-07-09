@@ -38,7 +38,7 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 
 ## Usage
 
-Simply add a private package reference to **Snek** in your project and it will automatically sign your assembly with a static key pair:
+Simply install the **Snek** package as a private dependency in your project and it will automatically sign your assembly with a static key pair:
 
 ```xml
 <ItemGroup>
