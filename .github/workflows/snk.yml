@@ -7,7 +7,6 @@ jobs:
   key:
     runs-on: windows-latest
     steps:
-      # Write to github actions output
       - name: Locate sn.exe
         id: locate-sn
         shell: pwsh
@@ -20,7 +19,7 @@ jobs:
 
           Write-Output "path=$path" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -NoNewline
 
-      - name: Generate strong name key pair
+      - name: Generate key pair
         shell: pwsh
         run: |
           & "${{ steps.locate-sn.outputs.path }}" -k keys.snk
