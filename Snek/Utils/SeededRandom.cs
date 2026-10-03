@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -26,7 +27,8 @@ internal class SeededRandom(string seed)
         {
             if (_bufferPosition >= _buffer.Length)
             {
-                var counterBytes = BitConverter.GetBytes(_counter);
+                var counterBytes = new byte[sizeof(long)];
+                BinaryPrimitives.WriteInt64BigEndian(counterBytes, _counter);
                 var input = new byte[_seed.Length + counterBytes.Length];
 
                 Buffer.BlockCopy(_seed, 0, input, 0, _seed.Length);

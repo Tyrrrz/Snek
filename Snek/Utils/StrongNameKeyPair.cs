@@ -78,8 +78,8 @@ internal static class StrongNameKeyPair
             // Force the two most significant bits so that the product of two such primes
             // always has the full expected bit length, and force the least significant bit
             // so that the candidate is odd.
-            bytes[byteLength - 1] |= 0b1100_0000;
-            bytes[0] |= 0x01;
+            bytes[0] |= 0b1100_0000;
+            bytes[byteLength - 1] |= 0x01;
 
             var candidate = FromBigEndianUnsigned(bytes);
             if (IsProbablyPrime(candidate, random, byteLength))
