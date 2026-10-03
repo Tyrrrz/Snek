@@ -9,7 +9,7 @@ namespace Snek;
 // always produces the same key pair, while different seeds produce different key pairs.
 // This algorithm is considered frozen: changing it would silently change the resulting key
 // (and thus the public key token) for every existing seed, which would be a breaking change.
-internal static class StrongNameKeyGenerator
+internal static class StrongNameKeyPair
 {
     // Matches the key size used by `sn -k` for the strong name key pairs historically shipped
     // with this package.
@@ -234,6 +234,12 @@ internal static class StrongNameKeyGenerator
         return result;
     }
 
+    // A deterministic pseudo-random byte generator, seeded from the provided string.
+    // Used in place of a true RNG so that prime search and Miller-Rabin witness selection
+    // (which both consume an arbitrary, a priori unknown amount of random-looking data)
+    // produce the exact same sequence of bytes for the same seed on every run.
+    // Internally, it hashes the seed together with an incrementing counter to produce an
+    // unbounded stream of pseudo-random bytes (a simple counter-mode hash construction).
     private sealed class DeterministicByteStream
     {
         private readonly byte[] _seed;
@@ -252,13 +258,13 @@ internal static class StrongNameKeyGenerator
             {
                 if (_bufferPosition >= _buffer.Length)
                 {
-                    using var sha256 = SHA256.Create();
                     var counterBytes = BitConverter.GetBytes(_counter);
+                    var input = new byte[_seed.Length + counterBytes.Length];
 
-                    sha256.TransformBlock(_seed, 0, _seed.Length, null, 0);
-                    sha256.TransformFinalBlock(counterBytes, 0, counterBytes.Length);
+                    Buffer.BlockCopy(_seed, 0, input, 0, _seed.Length);
+                    Buffer.BlockCopy(counterBytes, 0, input, _seed.Length, counterBytes.Length);
 
-                    _buffer = sha256.Hash!;
+                    _buffer = SHA256.HashData(input);
                     _bufferPosition = 0;
                     _counter++;
                 }

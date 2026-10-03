@@ -38,7 +38,7 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 
 ## Usage
 
-Simply install the **Snek** package as a private dependency in your project and it will automatically sign your assembly with a strong name key pair, deterministically derived from your package ID (or assembly name, if the package ID is not set):
+Simply install the **Snek** package as a private dependency in your project and it will automatically sign your assembly with a strong name key pair, deterministically derived from your package ID or assembly name (whichever is set):
 
 ```xml
 <ItemGroup>
@@ -52,17 +52,16 @@ You can then inspect the output assembly in **ILSpy** or a similar tool and see 
 // Snek.Demo, Version=0.0.0.0, Culture=neutral, PublicKeyToken=929e72f1096e8eac
 ```
 
-> [!NOTE]
-> The public key token is derived from the seed, so it stays the same across rebuilds and machines, but differs between projects with different package IDs or assembly names.
-> You can also set the seed explicitly, to control the resulting public key token independently of the package ID or assembly name:
->
-> ```xml
-> <PropertyGroup>
->   <AssemblyOriginatorKeySeed>my-custom-seed</AssemblyOriginatorKeySeed>
-> </PropertyGroup>
-> ```
->
-> Note that the seed only affects the identity of the resulting public key token &mdash; it is not a secret, and the private key is never meant to be kept confidential (it's derived deterministically and can trivially be reproduced by anyone who knows the seed).
+The public key token is derived from the seed, so it stays the same across rebuilds and machines, but differs between projects with different package IDs or assembly names.
+You can also set the seed explicitly, to control the resulting public key token independently of the package ID or assembly name:
+
+```xml
+<PropertyGroup>
+  <AssemblyOriginatorKeySeed>my-custom-seed</AssemblyOriginatorKeySeed>
+</PropertyGroup>
+```
+
+Note that the seed only affects the identity of the resulting public key token &mdash; it is not a secret, and the private key is never meant to be kept confidential (it's derived deterministically and can trivially be reproduced by anyone who knows the seed).
 
 ## Etymology
 
