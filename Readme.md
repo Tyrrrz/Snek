@@ -18,7 +18,7 @@
     <img src="favicon.png" alt="Icon" />
 </p>
 
-This is **Snek**, an MSBuild extension that automatically gives your assemblies a static strong name.
+This is **Snek**, an MSBuild extension that automatically gives your assemblies a strong name.
 This may be useful for library developers who wish to sign their binaries solely for compatibility reasons and prefer to avoid dealing with Windows-only `sn.exe`.
 
 ## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/prime/docs/why-so-political.md)</sup>
