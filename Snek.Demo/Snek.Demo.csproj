@@ -15,4 +15,13 @@
   <ItemGroup>
     <ProjectReference Include="../Snek/Snek.csproj" />
   </ItemGroup>
+
+  <!-- Props/targets are automatically imported by NuGet, but here we need to do it manually. -->
+  <!-- This needs to be done after everything else, to match NuGet's behavior. -->
+  <!-- Since we're referencing the project directly rather than through the packed NuGet -->
+  <!-- package, point the task loader at the project's own build output instead of `tasks/`. -->
+  <PropertyGroup>
+    <SnekTasksDirectory>$(MSBuildThisFileDirectory)../Snek/bin/$(Configuration)/</SnekTasksDirectory>
+  </PropertyGroup>
+  <Import Project="../Snek/Snek.targets" />
 </Project>

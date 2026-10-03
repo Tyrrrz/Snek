@@ -1,0 +1,61 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <!--
+    Points at the directory containing the `<TFM>/Snek.dll` task assemblies. Defaults to the
+    layout used when this file is consumed from the packed NuGet package, but can be overridden
+    (e.g. by a project that references Snek via `ProjectReference` instead) before this file is
+    imported.
+  -->
+  <PropertyGroup>
+    <_SnekTasksDirectory Condition="'$(SnekTasksDirectory)' == ''"
+      >$(MSBuildThisFileDirectory)../tasks/</_SnekTasksDirectory
+    >
+    <_SnekTasksDirectory Condition="'$(SnekTasksDirectory)' != ''"
+      >$(SnekTasksDirectory)</_SnekTasksDirectory
+    >
+  </PropertyGroup>
+
+  <UsingTask
+    TaskName="Snek.GenerateStrongNameKeyPairTask"
+    AssemblyFile="$(_SnekTasksDirectory)netstandard2.0/Snek.dll"
+    Condition="'$(MSBuildRuntimeType)' == 'Core'"
+  />
+  <UsingTask
+    TaskName="Snek.GenerateStrongNameKeyPairTask"
+    AssemblyFile="$(_SnekTasksDirectory)net472/Snek.dll"
+    Condition="'$(MSBuildRuntimeType)' != 'Core'"
+  />
+
+  <!--
+    Resolves the seed used to derive the strong name key pair (explicit value, falling back to
+    the package ID or the assembly name) and generates/caches the key pair before it's needed
+    by the `ResolveKeySource` target, unless the project already specifies its own key file or
+    key container.
+  -->
+  <Target
+    Name="GenerateStrongNameKeyPair"
+    BeforeTargets="ResolveKeySource"
+    Condition="
+      '$(SignAssembly)' == 'true'
+      and '$(AssemblyOriginatorKeyFile)' == ''
+      and '$(AssemblyKeyContainerName)' == ''
+    "
+  >
+    <PropertyGroup>
+      <_SnekSeed Condition="'$(AssemblyOriginatorKeySeed)' != ''"
+        >$(AssemblyOriginatorKeySeed)</_SnekSeed
+      >
+      <_SnekSeed Condition="'$(_SnekSeed)' == '' and '$(PackageId)' != ''">$(PackageId)</_SnekSeed>
+      <_SnekSeed Condition="'$(_SnekSeed)' == '' and '$(AssemblyName)' != ''"
+        >$(AssemblyName)</_SnekSeed
+      >
+      <_SnekSeed Condition="'$(_SnekSeed)' == ''">$(MSBuildProjectName)</_SnekSeed>
+    </PropertyGroup>
+
+    <GenerateStrongNameKeyPairTask
+      Seed="$(_SnekSeed)"
+      CacheDirectory="$(BaseIntermediateOutputPath)Snek\"
+    >
+      <Output TaskParameter="KeyFilePath" PropertyName="AssemblyOriginatorKeyFile" />
+    </GenerateStrongNameKeyPairTask>
+  </Target>
+</Project>

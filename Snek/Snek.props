@@ -2,8 +2,5 @@
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
     <PublicSign>false</PublicSign>
-    <AssemblyOriginatorKeyFile Condition="'$(AssemblyOriginatorKeyFile)' == ''"
-      >$(MSBuildThisFileDirectory)/Snek.snk</AssemblyOriginatorKeyFile
-    >
   </PropertyGroup>
 </Project>
