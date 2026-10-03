@@ -11,13 +11,13 @@ namespace Snek;
 public class StrongNameTask : Task
 {
     [Required]
-    public string Seed { get; set; } = "";
+    public required string Seed { get; set; }
 
     [Required]
-    public string CacheDirectoryPath { get; set; } = "";
+    public required string CacheDirectoryPath { get; set; }
 
     [Output]
-    public string KeyFilePath { get; set; } = "";
+    public string? KeyFilePath { get; set; }
 
     public override bool Execute()
     {
