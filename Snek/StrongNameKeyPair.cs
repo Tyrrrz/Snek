@@ -1,7 +1,6 @@
 using System;
 using System.Numerics;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Snek;
 
@@ -46,10 +45,10 @@ internal static class StrongNameKeyPair
 
     public static byte[] Generate(string seed)
     {
-        var stream = new DeterministicByteStream(seed);
+        var random = new SeededRandom(seed);
         var primeBits = KeySizeBits / 2;
 
-        BigInteger p = GeneratePrime(stream, primeBits);
+        BigInteger p = GeneratePrime(random, primeBits);
 
         BigInteger q;
         BigInteger e = 65537;
@@ -57,7 +56,7 @@ internal static class StrongNameKeyPair
         BigInteger n;
         while (true)
         {
-            q = GeneratePrime(stream, primeBits);
+            q = GeneratePrime(random, primeBits);
             if (q == p)
                 continue;
 
@@ -121,13 +120,13 @@ internal static class StrongNameKeyPair
         return x;
     }
 
-    private static BigInteger GeneratePrime(DeterministicByteStream stream, int bits)
+    private static BigInteger GeneratePrime(SeededRandom random, int bits)
     {
         var byteLength = bits / 8;
 
         while (true)
         {
-            var bytes = stream.Next(byteLength);
+            var bytes = random.NextBytes(byteLength);
 
             // Force the two most significant bits so that the product of two such primes
             // always has the full expected bit length, and force the least significant bit
@@ -136,14 +135,14 @@ internal static class StrongNameKeyPair
             bytes[0] |= 0x01;
 
             var candidate = FromBigEndianUnsigned(bytes);
-            if (IsProbablyPrime(candidate, stream, byteLength))
+            if (IsProbablyPrime(candidate, random, byteLength))
                 return candidate;
         }
     }
 
     private static bool IsProbablyPrime(
         BigInteger value,
-        DeterministicByteStream stream,
+        SeededRandom random,
         int byteLength,
         int rounds = 32
     )
@@ -173,7 +172,8 @@ internal static class StrongNameKeyPair
             BigInteger witness;
             while (true)
             {
-                var candidate = FromBigEndianUnsigned(stream.Next(byteLength)) % (value - 3) + 2;
+                var candidate =
+                    FromBigEndianUnsigned(random.NextBytes(byteLength)) % (value - 3) + 2;
                 if (candidate >= 2 && candidate <= value - 2)
                 {
                     witness = candidate;
@@ -232,54 +232,5 @@ internal static class StrongNameKeyPair
         }
 
         return result;
-    }
-
-    // A deterministic pseudo-random byte generator, seeded from the provided string.
-    // Used in place of a true RNG so that prime search and Miller-Rabin witness selection
-    // (which both consume an arbitrary, a priori unknown amount of random-looking data)
-    // produce the exact same sequence of bytes for the same seed on every run.
-    // Internally, it hashes the seed together with an incrementing counter to produce an
-    // unbounded stream of pseudo-random bytes (a simple counter-mode hash construction).
-    private sealed class DeterministicByteStream
-    {
-        private readonly byte[] _seed;
-        private long _counter;
-        private byte[] _buffer = Array.Empty<byte>();
-        private int _bufferPosition;
-
-        public DeterministicByteStream(string seed) => _seed = Encoding.UTF8.GetBytes(seed);
-
-        public byte[] Next(int count)
-        {
-            var result = new byte[count];
-            var resultPosition = 0;
-
-            while (resultPosition < count)
-            {
-                if (_bufferPosition >= _buffer.Length)
-                {
-                    var counterBytes = BitConverter.GetBytes(_counter);
-                    var input = new byte[_seed.Length + counterBytes.Length];
-
-                    Buffer.BlockCopy(_seed, 0, input, 0, _seed.Length);
-                    Buffer.BlockCopy(counterBytes, 0, input, _seed.Length, counterBytes.Length);
-
-                    _buffer = SHA256.HashData(input);
-                    _bufferPosition = 0;
-                    _counter++;
-                }
-
-                var chunkLength = Math.Min(
-                    count - resultPosition,
-                    _buffer.Length - _bufferPosition
-                );
-                Buffer.BlockCopy(_buffer, _bufferPosition, result, resultPosition, chunkLength);
-
-                _bufferPosition += chunkLength;
-                resultPosition += chunkLength;
-            }
-
-            return result;
-        }
     }
 }
