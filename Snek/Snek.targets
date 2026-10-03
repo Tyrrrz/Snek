@@ -7,7 +7,7 @@
   <Target
     Name="Snek_GenerateStrongNameKeyPair"
     BeforeTargets="ResolveKeySource"
-    Condition="'$(SignAssembly)' == 'true' and '$(AssemblyKeyContainerName)' == ''"
+    Condition="'$(AssemblyKeyContainerName)' == ''"
   >
     <Error
       Condition="'$(AssemblyOriginatorKeyFile)' != ''"
@@ -30,7 +30,7 @@
 
     <StrongNameTask
       Seed="$(AssemblyOriginatorKeySeed)"
-      CacheDirectoryPath="$(BaseIntermediateOutputPath)Snek\"
+      CacheDirectoryPath="$(BaseIntermediateOutputPath)/Snek/"
     >
       <Output TaskParameter="KeyFilePath" PropertyName="AssemblyOriginatorKeyFile" />
     </StrongNameTask>
