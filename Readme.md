@@ -49,7 +49,7 @@ Simply install the **Snek** package as a private dependency in your project and 
 You can then inspect the output assembly in **ILSpy** or a similar tool and see that it has a public key token:
 
 ```csharp
-// Snek.Demo, Version=0.0.0.0, Culture=neutral, PublicKeyToken=929e72f1096e8eac
+// Snek.Demo, Version=0.0.0.0, Culture=neutral, PublicKeyToken=af13e80e9703c96d
 ```
 
 The public key token is derived from a seed, so it stays the same across rebuilds and machines, but differs between projects with different package IDs or assembly names.
