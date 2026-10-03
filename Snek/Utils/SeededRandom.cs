@@ -2,7 +2,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Snek;
+namespace Snek.Utils;
 
 // A deterministic pseudo-random byte generator, seeded from the provided string.
 // Unlike `System.Random`, whose seeded sequence is not guaranteed to be stable across
@@ -10,14 +10,12 @@ namespace Snek;
 // sequence of bytes for the same seed on every run, on every target framework.
 // Internally, it hashes the seed together with an incrementing counter to produce an
 // unbounded stream of pseudo-random bytes (a simple counter-mode hash construction).
-internal sealed class SeededRandom
+internal class SeededRandom(string seed)
 {
-    private readonly byte[] _seed;
+    private readonly byte[] _seed = Encoding.UTF8.GetBytes(seed);
     private long _counter;
-    private byte[] _buffer = Array.Empty<byte>();
+    private byte[] _buffer = [];
     private int _bufferPosition;
-
-    public SeededRandom(string seed) => _seed = Encoding.UTF8.GetBytes(seed);
 
     public byte[] NextBytes(int count)
     {

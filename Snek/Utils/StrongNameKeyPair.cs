@@ -2,7 +2,7 @@ using System;
 using System.Numerics;
 using System.Security.Cryptography;
 
-namespace Snek;
+namespace Snek.Utils;
 
 // Deterministically generates an RSA key pair from a string seed, such that the same seed
 // always produces the same key pair, while different seeds produce different key pairs.
@@ -42,59 +42,6 @@ internal static class StrongNameKeyPair
         89,
         97,
     };
-
-    public static byte[] Generate(string seed)
-    {
-        var random = new SeededRandom(seed);
-        var primeBits = KeySizeBits / 2;
-
-        BigInteger p = GeneratePrime(random, primeBits);
-
-        BigInteger q;
-        BigInteger e = 65537;
-        BigInteger d;
-        BigInteger n;
-        while (true)
-        {
-            q = GeneratePrime(random, primeBits);
-            if (q == p)
-                continue;
-
-            var (pp, qq) = p > q ? (p, q) : (q, p);
-            var phi = (pp - 1) * (qq - 1);
-
-            if (BigInteger.GreatestCommonDivisor(e, phi) != 1)
-                continue;
-
-            p = pp;
-            q = qq;
-            n = pp * qq;
-            d = ModInverse(e, phi);
-
-            break;
-        }
-
-        var dp = d % (p - 1);
-        var dq = d % (q - 1);
-        var qInv = ModInverse(q, p);
-
-        var parameters = new RSAParameters
-        {
-            Modulus = ToFixedBigEndianBytes(n, KeySizeBits / 8),
-            Exponent = ToFixedBigEndianBytes(e, 3),
-            D = ToFixedBigEndianBytes(d, KeySizeBits / 8),
-            P = ToFixedBigEndianBytes(p, primeBits / 8),
-            Q = ToFixedBigEndianBytes(q, primeBits / 8),
-            DP = ToFixedBigEndianBytes(dp, primeBits / 8),
-            DQ = ToFixedBigEndianBytes(dq, primeBits / 8),
-            InverseQ = ToFixedBigEndianBytes(qInv, primeBits / 8),
-        };
-
-        using var rsa = new RSACryptoServiceProvider();
-        rsa.ImportParameters(parameters);
-
-        return rsa.ExportCspBlob(true);
-    }
 
     private static BigInteger ModInverse(BigInteger value, BigInteger modulus)
     {
@@ -232,5 +179,58 @@ internal static class StrongNameKeyPair
         }
 
         return result;
+    }
+
+    public static byte[] Generate(string seed)
+    {
+        var random = new SeededRandom(seed);
+        var primeBits = KeySizeBits / 2;
+
+        var p = GeneratePrime(random, primeBits);
+
+        BigInteger q;
+        BigInteger e = 65537;
+        BigInteger d;
+        BigInteger n;
+        while (true)
+        {
+            q = GeneratePrime(random, primeBits);
+            if (q == p)
+                continue;
+
+            var (pp, qq) = p > q ? (p, q) : (q, p);
+            var phi = (pp - 1) * (qq - 1);
+
+            if (BigInteger.GreatestCommonDivisor(e, phi) != 1)
+                continue;
+
+            p = pp;
+            q = qq;
+            n = pp * qq;
+            d = ModInverse(e, phi);
+
+            break;
+        }
+
+        var dp = d % (p - 1);
+        var dq = d % (q - 1);
+        var qInv = ModInverse(q, p);
+
+        var parameters = new RSAParameters
+        {
+            Modulus = ToFixedBigEndianBytes(n, KeySizeBits / 8),
+            Exponent = ToFixedBigEndianBytes(e, 3),
+            D = ToFixedBigEndianBytes(d, KeySizeBits / 8),
+            P = ToFixedBigEndianBytes(p, primeBits / 8),
+            Q = ToFixedBigEndianBytes(q, primeBits / 8),
+            DP = ToFixedBigEndianBytes(dp, primeBits / 8),
+            DQ = ToFixedBigEndianBytes(dq, primeBits / 8),
+            InverseQ = ToFixedBigEndianBytes(qInv, primeBits / 8),
+        };
+
+        using var rsa = new RSACryptoServiceProvider();
+        rsa.ImportParameters(parameters);
+
+        return rsa.ExportCspBlob(true);
     }
 }
