@@ -1,0 +1,38 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <!--
+    Resolves the seed used to derive the strong name key pair (explicit value, falling back to
+    the package ID or the assembly name) and generates/caches the key pair before it's needed
+    by the `ResolveKeySource` target.
+  -->
+  <Target
+    Name="Snek_GenerateStrongNameKeyPair"
+    BeforeTargets="ResolveKeySource"
+    Condition="'$(AssemblyKeyContainerName)' == ''"
+  >
+    <Error
+      Condition="'$(AssemblyOriginatorKeyFile)' != ''"
+      Text="Snek generates 'AssemblyOriginatorKeyFile' automatically and does not expect it to be set manually. Remove this property from your project, or remove the Snek package reference if you want to provide your own key file."
+    />
+
+    <PropertyGroup>
+      <AssemblyOriginatorKeySeed
+        Condition="'$(AssemblyOriginatorKeySeed)' == '' and '$(PackageId)' != ''"
+        >$(PackageId)</AssemblyOriginatorKeySeed
+      >
+      <AssemblyOriginatorKeySeed
+        Condition="'$(AssemblyOriginatorKeySeed)' == '' and '$(AssemblyName)' != ''"
+        >$(AssemblyName)</AssemblyOriginatorKeySeed
+      >
+      <AssemblyOriginatorKeySeed Condition="'$(AssemblyOriginatorKeySeed)' == ''"
+        >$(MSBuildProjectName)</AssemblyOriginatorKeySeed
+      >
+    </PropertyGroup>
+
+    <StrongNameTask
+      Seed="$(AssemblyOriginatorKeySeed)"
+      CacheDirectoryPath="$(BaseIntermediateOutputPath)/Snek/"
+    >
+      <Output TaskParameter="KeyFilePath" PropertyName="AssemblyOriginatorKeyFile" />
+    </StrongNameTask>
+  </Target>
+</Project>

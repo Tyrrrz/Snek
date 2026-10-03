@@ -38,7 +38,7 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 
 ## Usage
 
-Simply install the **Snek** package as a private dependency in your project and it will automatically sign your assembly with a static key pair:
+Simply install the **Snek** package as a private dependency in your project and it will automatically sign your assembly with a strong name key pair, deterministically derived from your package ID or assembly name (whichever is set):
 
 ```xml
 <ItemGroup>
@@ -49,12 +49,17 @@ Simply install the **Snek** package as a private dependency in your project and 
 You can then inspect the output assembly in **ILSpy** or a similar tool and see that it has a public key token:
 
 ```csharp
-// Snek.Demo, Version=0.0.0.0, Culture=neutral, PublicKeyToken=337a390ad141274e
+// Snek.Demo, Version=0.0.0.0, Culture=neutral, PublicKeyToken=929e72f1096e8eac
 ```
 
-> [!NOTE]
-> The public key token will be the same for all assemblies signed with **Snek**.
-> For the majority of use cases involving strong naming in modern .NET, this is sufficient.
+The public key token is derived from a seed, so it stays the same across rebuilds and machines, but differs between projects with different package IDs or assembly names.
+You can also set the seed explicitly, to control the resulting public key token independently of the package ID or assembly name:
+
+```xml
+<PropertyGroup>
+  <AssemblyOriginatorKeySeed>my-custom-seed</AssemblyOriginatorKeySeed>
+</PropertyGroup>
+```
 
 ## Etymology
 

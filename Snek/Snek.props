@@ -1,9 +1,21 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project
+  xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+  ToolsVersion="4.0"
+  TreatAsLocalProperty="TaskAssembly"
+>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
     <PublicSign>false</PublicSign>
-    <AssemblyOriginatorKeyFile Condition="'$(AssemblyOriginatorKeyFile)' == ''"
-      >$(MSBuildThisFileDirectory)/Snek.snk</AssemblyOriginatorKeyFile
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TaskAssembly Condition="'$(MSBuildRuntimeType)' == 'Core'"
+      >$(MSBuildThisFileDirectory)/../tasks/netstandard2.0/Snek.dll</TaskAssembly
+    >
+    <TaskAssembly Condition="'$(MSBuildRuntimeType)' != 'Core'"
+      >$(MSBuildThisFileDirectory)/../tasks/net472/Snek.dll</TaskAssembly
     >
   </PropertyGroup>
+
+  <UsingTask TaskName="Snek.StrongNameTask" AssemblyFile="$(TaskAssembly)" />
 </Project>

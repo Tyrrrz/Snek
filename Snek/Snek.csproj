@@ -16,7 +16,7 @@
   <ItemGroup>
     <None Include="../favicon.png" Pack="true" PackagePath="" Visible="false" />
     <Content Include="Snek.props" Pack="true" PackagePath="build" />
-    <Content Include="Snek.snk" Pack="true" PackagePath="build" />
+    <Content Include="Snek.targets" Pack="true" PackagePath="build" />
   </ItemGroup>
 
   <ItemGroup>
