@@ -82,7 +82,7 @@ internal static class StrongNameKeyPair
             bytes[0] |= 0b1100_0000;
             bytes[byteLength - 1] |= 0x01;
 
-            var candidate = bytes.FromBigEndianUnsigned();
+            var candidate = BigInteger.FromBigEndianUnsigned(bytes);
             if (IsProbablyPrime(candidate, random, byteLength))
                 return candidate;
         }
@@ -121,7 +121,8 @@ internal static class StrongNameKeyPair
             while (true)
             {
                 var candidate =
-                    random.NextBytes(byteLength).FromBigEndianUnsigned() % (value - 3) + 2;
+                    BigInteger.FromBigEndianUnsigned(random.NextBytes(byteLength)) % (value - 3)
+                    + 2;
                 if (candidate >= 2 && candidate <= value - 2)
                 {
                     witness = candidate;
