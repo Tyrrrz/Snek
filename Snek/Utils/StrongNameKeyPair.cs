@@ -7,8 +7,6 @@ namespace Snek.Utils;
 
 // Deterministically generates an RSA key pair from a string seed, such that the same seed
 // always produces the same key pair, while different seeds produce different key pairs.
-// This algorithm is considered frozen: changing it would silently change the resulting key
-// (and thus the public key token) for every existing seed, which would be a breaking change.
 internal static class StrongNameKeyPair
 {
     // Matches the key size used by `sn -k` for the strong name key pairs historically shipped
@@ -16,7 +14,7 @@ internal static class StrongNameKeyPair
     private const int KeySizeBits = 1024;
 
     private static readonly int[] SmallPrimes =
-    {
+    [
         2,
         3,
         5,
@@ -42,13 +40,13 @@ internal static class StrongNameKeyPair
         83,
         89,
         97,
-    };
+    ];
 
     private static BigInteger ModInverse(BigInteger value, BigInteger modulus)
     {
         var originalModulus = modulus;
-        BigInteger y = 0;
-        BigInteger x = 1;
+        var y = (BigInteger)0;
+        var x = (BigInteger)1;
 
         var a = value % modulus;
         if (a < 0)
@@ -123,6 +121,7 @@ internal static class StrongNameKeyPair
                 var candidate =
                     BigInteger.FromBigEndianUnsigned(random.NextBytes(byteLength)) % (value - 3)
                     + 2;
+
                 if (candidate >= 2 && candidate <= value - 2)
                 {
                     witness = candidate;

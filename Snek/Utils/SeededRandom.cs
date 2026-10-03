@@ -5,12 +5,7 @@ using System.Text;
 
 namespace Snek.Utils;
 
-// A deterministic pseudo-random byte generator, seeded from the provided string.
-// Unlike `System.Random`, whose seeded sequence is not guaranteed to be stable across
-// runtimes or versions, this type is based on SHA256, which produces the exact same
-// sequence of bytes for the same seed on every run, on every target framework.
-// Internally, it hashes the seed together with an incrementing counter to produce an
-// unbounded stream of pseudo-random bytes (a simple counter-mode hash construction).
+// Like System.Random, but with a deterministic implementation based on a string seed
 internal class SeededRandom(string seed)
 {
     private readonly byte[] _seed = Encoding.UTF8.GetBytes(seed);

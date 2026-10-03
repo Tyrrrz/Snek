@@ -38,7 +38,7 @@ To learn more about the war and how you can help, [click here](https://tyrrrz.me
 
 ## Usage
 
-Simply install the **Snek** package as a private dependency in your project and it will automatically sign your assembly with a strong name key pair, deterministically derived from your package ID or assembly name (whichever is set):
+Simply install the **Snek** package as a private dependency in your project and it will automatically sign your assembly with a strong name:
 
 ```xml
 <ItemGroup>
@@ -52,8 +52,8 @@ You can then inspect the output assembly in **ILSpy** or a similar tool and see 
 // Snek.Demo, Version=0.0.0.0, Culture=neutral, PublicKeyToken=af13e80e9703c96d
 ```
 
-The public key token is derived from a seed, so it stays the same across rebuilds and machines, but differs between projects with different package IDs or assembly names.
-You can also set the seed explicitly, to control the resulting public key token independently of the package ID or assembly name:
+The strong name key pair is generated deterministically based on a seed, which is derived from the value of the `<PackageId>` or `<AssemblyName>` property, depending on which one is set.
+You can also provide the seed yourself by explicitly setting `<AssemblyOriginatorKeySeed>` in your project file:
 
 ```xml
 <PropertyGroup>
@@ -63,4 +63,4 @@ You can also set the seed explicitly, to control the resulting public key token 
 
 ## Etymology
 
-**Snek** is a playful nickname for the `sn -k` command, which is used to generate a strong name key pair.
+**Snek** is a playful nickname for the `sn -k` command, which is traditionally used to generate a strong name key pair in .NET development.
