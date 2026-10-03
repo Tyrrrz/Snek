@@ -1,6 +1,7 @@
 using System;
 using System.Numerics;
 using System.Security.Cryptography;
+using Snek.Utils.Extensions;
 
 namespace Snek.Utils;
 
@@ -81,7 +82,7 @@ internal static class StrongNameKeyPair
             bytes[0] |= 0b1100_0000;
             bytes[byteLength - 1] |= 0x01;
 
-            var candidate = FromBigEndianUnsigned(bytes);
+            var candidate = bytes.FromBigEndianUnsigned();
             if (IsProbablyPrime(candidate, random, byteLength))
                 return candidate;
         }
@@ -120,7 +121,7 @@ internal static class StrongNameKeyPair
             while (true)
             {
                 var candidate =
-                    FromBigEndianUnsigned(random.NextBytes(byteLength)) % (value - 3) + 2;
+                    random.NextBytes(byteLength).FromBigEndianUnsigned() % (value - 3) + 2;
                 if (candidate >= 2 && candidate <= value - 2)
                 {
                     witness = candidate;
@@ -150,33 +151,19 @@ internal static class StrongNameKeyPair
         return true;
     }
 
-    // Interprets the provided bytes (in big-endian order) as a non-negative BigInteger.
-    private static BigInteger FromBigEndianUnsigned(byte[] bigEndianBytes)
-    {
-        // BigInteger's byte array constructor expects little-endian, two's complement input.
-        // An extra trailing zero byte guarantees the value is interpreted as non-negative.
-        var littleEndianBytes = new byte[bigEndianBytes.Length + 1];
-        for (var i = 0; i < bigEndianBytes.Length; i++)
-            littleEndianBytes[i] = bigEndianBytes[bigEndianBytes.Length - 1 - i];
-
-        return new BigInteger(littleEndianBytes);
-    }
-
     // Converts a non-negative BigInteger to a fixed-length, big-endian, unsigned byte array,
     // as required by `RSAParameters`.
     private static byte[] ToFixedBigEndianBytes(BigInteger value, int length)
     {
-        var littleEndianBytes = value.ToByteArray();
+        var bigEndianBytes = value.ToByteArray(isUnsigned: true, isBigEndian: true);
         var result = new byte[length];
-
-        for (var i = 0; i < littleEndianBytes.Length; i++)
-        {
-            // Skip the extra zero sign byte that `BigInteger.ToByteArray()` may append.
-            if (littleEndianBytes[i] == 0 && i >= length)
-                continue;
-
-            result[length - 1 - i] = littleEndianBytes[i];
-        }
+        Buffer.BlockCopy(
+            bigEndianBytes,
+            0,
+            result,
+            length - bigEndianBytes.Length,
+            bigEndianBytes.Length
+        );
 
         return result;
     }
