@@ -10,12 +10,10 @@
     />
 
     <PropertyGroup>
-      <AssemblyOriginatorKeySeed
-        Condition="'$(AssemblyOriginatorKeySeed)' == ''"
+      <AssemblyOriginatorKeySeed Condition="'$(AssemblyOriginatorKeySeed)' == ''"
         >$(PackageId)</AssemblyOriginatorKeySeed
       >
-      <AssemblyOriginatorKeySeed
-        Condition="'$(AssemblyOriginatorKeySeed)' == ''"
+      <AssemblyOriginatorKeySeed Condition="'$(AssemblyOriginatorKeySeed)' == ''"
         >$(AssemblyName)</AssemblyOriginatorKeySeed
       >
       <AssemblyOriginatorKeySeed Condition="'$(AssemblyOriginatorKeySeed)' == ''"
