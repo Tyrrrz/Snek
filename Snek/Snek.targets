@@ -1,9 +1,4 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
-  <!--
-    Resolves the seed used to derive the strong name key pair (explicit value, falling back to
-    the package ID or the assembly name) and generates/caches the key pair before it's needed
-    by the `ResolveKeySource` target.
-  -->
   <Target
     Name="Snek_GenerateStrongNameKeyPair"
     BeforeTargets="ResolveKeySource"
@@ -11,16 +6,16 @@
   >
     <Error
       Condition="'$(AssemblyOriginatorKeyFile)' != ''"
-      Text="Snek generates 'AssemblyOriginatorKeyFile' automatically and does not expect it to be set manually. Remove this property from your project, or remove the Snek package reference if you want to provide your own key file."
+      Text="Explicitly specified AssemblyOriginatorKeyFile cannot be used in combination with Snek. Remove this property from your project, or remove the Snek package reference if you want to provide your own key file."
     />
 
     <PropertyGroup>
       <AssemblyOriginatorKeySeed
-        Condition="'$(AssemblyOriginatorKeySeed)' == '' and '$(PackageId)' != ''"
+        Condition="'$(AssemblyOriginatorKeySeed)' == ''"
         >$(PackageId)</AssemblyOriginatorKeySeed
       >
       <AssemblyOriginatorKeySeed
-        Condition="'$(AssemblyOriginatorKeySeed)' == '' and '$(AssemblyName)' != ''"
+        Condition="'$(AssemblyOriginatorKeySeed)' == ''"
         >$(AssemblyName)</AssemblyOriginatorKeySeed
       >
       <AssemblyOriginatorKeySeed Condition="'$(AssemblyOriginatorKeySeed)' == ''"
