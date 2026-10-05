@@ -8,7 +8,9 @@ namespace Snek.Utils;
 // Like System.Random, but with a deterministic implementation based on a string seed
 internal class SeededRandom(string seed)
 {
-    private readonly byte[] _seed = Encoding.UTF8.GetBytes(seed);
+    // Seed bytes followed by room for the big-endian block counter
+    private readonly byte[] _input = [.. Encoding.UTF8.GetBytes(seed), .. new byte[sizeof(long)]];
+
     private long _counter;
     private byte[] _buffer = [];
     private int _bufferPosition;
@@ -22,20 +24,18 @@ internal class SeededRandom(string seed)
         {
             if (_bufferPosition >= _buffer.Length)
             {
-                var counterBytes = new byte[sizeof(long)];
-                BinaryPrimitives.WriteInt64BigEndian(counterBytes, _counter);
-                var input = new byte[_seed.Length + counterBytes.Length];
+                BinaryPrimitives.WriteInt64BigEndian(
+                    _input.AsSpan(_input.Length - sizeof(long)),
+                    _counter
+                );
 
-                Buffer.BlockCopy(_seed, 0, input, 0, _seed.Length);
-                Buffer.BlockCopy(counterBytes, 0, input, _seed.Length, counterBytes.Length);
-
-                _buffer = SHA256.HashData(input);
+                _buffer = SHA256.HashData(_input);
                 _bufferPosition = 0;
                 _counter++;
             }
 
             var chunkLength = Math.Min(count - resultPosition, _buffer.Length - _bufferPosition);
-            Buffer.BlockCopy(_buffer, _bufferPosition, result, resultPosition, chunkLength);
+            _buffer.AsSpan(_bufferPosition, chunkLength).CopyTo(result.AsSpan(resultPosition));
 
             _bufferPosition += chunkLength;
             resultPosition += chunkLength;
