@@ -1,4 +1,3 @@
-using System;
 using System.Numerics;
 using System.Security.Cryptography;
 using Snek.Utils.Extensions;
@@ -9,8 +8,7 @@ namespace Snek.Utils;
 // always produces the same key pair, while different seeds produce different key pairs.
 internal static class StrongNameKeyPair
 {
-    // Matches the key size used by `sn -k` for the strong name key pairs historically shipped
-    // with this package.
+    // Matches the key size used by `sn -k`
     private const int KeySizeBits = 1024;
 
     private static readonly int[] SmallPrimes =
@@ -80,7 +78,7 @@ internal static class StrongNameKeyPair
             bytes[0] |= 0b1100_0000;
             bytes[byteLength - 1] |= 0x01;
 
-            var candidate = BigInteger.FromBigEndianUnsigned(bytes);
+            var candidate = BigInteger.FromBytes(bytes, isUnsigned: true, isBigEndian: true);
             if (IsProbablyPrime(candidate, random, byteLength))
                 return candidate;
         }
@@ -119,7 +117,11 @@ internal static class StrongNameKeyPair
             while (true)
             {
                 var candidate =
-                    BigInteger.FromBigEndianUnsigned(random.NextBytes(byteLength)) % (value - 3)
+                    BigInteger.FromBytes(
+                        random.NextBytes(byteLength),
+                        isUnsigned: true,
+                        isBigEndian: true
+                    ) % (value - 3)
                     + 2;
 
                 if (candidate >= 2 && candidate <= value - 2)
@@ -149,23 +151,6 @@ internal static class StrongNameKeyPair
         }
 
         return true;
-    }
-
-    // Converts a non-negative BigInteger to a fixed-length, big-endian, unsigned byte array,
-    // as required by `RSAParameters`.
-    private static byte[] ToFixedBigEndianBytes(BigInteger value, int length)
-    {
-        var bigEndianBytes = value.ToByteArray(isUnsigned: true, isBigEndian: true);
-        var result = new byte[length];
-        Buffer.BlockCopy(
-            bigEndianBytes,
-            0,
-            result,
-            length - bigEndianBytes.Length,
-            bigEndianBytes.Length
-        );
-
-        return result;
     }
 
     public static byte[] Generate(string seed)
@@ -203,16 +188,17 @@ internal static class StrongNameKeyPair
         var dq = d % (q - 1);
         var qInv = ModInverse(q, p);
 
+        // RSAParameters requires fixed-length, big-endian, unsigned byte arrays
         var parameters = new RSAParameters
         {
-            Modulus = ToFixedBigEndianBytes(n, KeySizeBits / 8),
-            Exponent = ToFixedBigEndianBytes(e, 3),
-            D = ToFixedBigEndianBytes(d, KeySizeBits / 8),
-            P = ToFixedBigEndianBytes(p, primeBits / 8),
-            Q = ToFixedBigEndianBytes(q, primeBits / 8),
-            DP = ToFixedBigEndianBytes(dp, primeBits / 8),
-            DQ = ToFixedBigEndianBytes(dq, primeBits / 8),
-            InverseQ = ToFixedBigEndianBytes(qInv, primeBits / 8),
+            Modulus = n.ToByteArray(true, true).PadToLength(KeySizeBits / 8),
+            Exponent = e.ToByteArray(true, true).PadToLength(3),
+            D = d.ToByteArray(true, true).PadToLength(KeySizeBits / 8),
+            P = p.ToByteArray(true, true).PadToLength(primeBits / 8),
+            Q = q.ToByteArray(true, true).PadToLength(primeBits / 8),
+            DP = dp.ToByteArray(true, true).PadToLength(primeBits / 8),
+            DQ = dq.ToByteArray(true, true).PadToLength(primeBits / 8),
+            InverseQ = qInv.ToByteArray(true, true).PadToLength(primeBits / 8),
         };
 
         using var rsa = new RSACryptoServiceProvider();
