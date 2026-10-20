@@ -6,9 +6,11 @@
 
   <PropertyGroup>
     <SnekTaskAssembly Condition="'$(MSBuildRuntimeType)' == 'Core'"
-      >$(MSBuildThisFileDirectory)/../tasks/netstandard2.0/Snek.dll</SnekTaskAssembly>
+      >$(MSBuildThisFileDirectory)/../tasks/netstandard2.0/Snek.dll</SnekTaskAssembly
+    >
     <SnekTaskAssembly Condition="'$(MSBuildRuntimeType)' != 'Core'"
-      >$(MSBuildThisFileDirectory)/../tasks/net472/Snek.dll</SnekTaskAssembly>
+      >$(MSBuildThisFileDirectory)/../tasks/net472/Snek.dll</SnekTaskAssembly
+    >
   </PropertyGroup>
 
   <UsingTask TaskName="Snek.StrongNameTask" AssemblyFile="$(SnekTaskAssembly)" />

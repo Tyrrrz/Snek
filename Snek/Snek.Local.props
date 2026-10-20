@@ -4,8 +4,10 @@
   <!-- Props for local testing, used by the demo project -->
   <PropertyGroup>
     <SnekTaskAssembly Condition="'$(MSBuildRuntimeType)' == 'Core'"
-      >$(MSBuildThisFileDirectory)/bin/$(Configuration)/netstandard2.0/Snek.dll</SnekTaskAssembly>
+      >$(MSBuildThisFileDirectory)/bin/$(Configuration)/netstandard2.0/Snek.dll</SnekTaskAssembly
+    >
     <SnekTaskAssembly Condition="'$(MSBuildRuntimeType)' != 'Core'"
-      >$(MSBuildThisFileDirectory)/bin/$(Configuration)/net472/Snek.dll</SnekTaskAssembly>
+      >$(MSBuildThisFileDirectory)/bin/$(Configuration)/net472/Snek.dll</SnekTaskAssembly
+    >
   </PropertyGroup>
 </Project>
