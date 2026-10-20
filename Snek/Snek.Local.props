@@ -1,17 +1,13 @@
-<Project
-  xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
-  ToolsVersion="4.0"
-  TreatAsLocalProperty="TaskAssembly"
->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <Import Project="Snek.props" />
 
   <!-- Props for local testing, used by the demo project -->
   <PropertyGroup>
-    <TaskAssembly Condition="'$(MSBuildRuntimeType)' == 'Core'"
-      >$(MSBuildThisFileDirectory)/bin/$(Configuration)/netstandard2.0/Snek.dll</TaskAssembly
+    <SnekTaskAssembly Condition="'$(MSBuildRuntimeType)' == 'Core'"
+      >$(MSBuildThisFileDirectory)/bin/$(Configuration)/netstandard2.0/Snek.dll</SnekTaskAssembly
     >
-    <TaskAssembly Condition="'$(MSBuildRuntimeType)' != 'Core'"
-      >$(MSBuildThisFileDirectory)/bin/$(Configuration)/net472/Snek.dll</TaskAssembly
+    <SnekTaskAssembly Condition="'$(MSBuildRuntimeType)' != 'Core'"
+      >$(MSBuildThisFileDirectory)/bin/$(Configuration)/net472/Snek.dll</SnekTaskAssembly
     >
   </PropertyGroup>
 </Project>
