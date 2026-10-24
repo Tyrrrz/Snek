@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSharpier.MSBuild" PrivateAssets="all" />
+    <PackageReference Include="CSharpier.MsBuild" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

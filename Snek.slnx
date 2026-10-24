@@ -10,4 +10,5 @@
 
   <Project Path="Snek/Snek.csproj" />
   <Project Path="Snek.Demo/Snek.Demo.csproj" />
+  <Project Path="Snek.Tests/Snek.Tests.csproj" />
 </Solution>
