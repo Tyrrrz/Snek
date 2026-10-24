@@ -3,6 +3,7 @@
 [![Status](https://img.shields.io/badge/status-active-47c219.svg)](https://github.com/Tyrrrz/.github/blob/prime/docs/project-status.md)
 [![Made in Ukraine](https://img.shields.io/badge/made_in-ukraine-ffd700.svg?labelColor=0057b7)](https://tyrrrz.me/ukraine)
 [![Build](https://img.shields.io/github/actions/workflow/status/Tyrrrz/Snek/main.yml?branch=prime)](https://github.com/Tyrrrz/Snek/actions)
+[![Coverage](https://img.shields.io/codecov/c/github/Tyrrrz/Snek/prime)](https://codecov.io/gh/Tyrrrz/Snek)
 [![Version](https://img.shields.io/nuget/v/Snek.svg)](https://nuget.org/packages/Snek)
 [![Downloads](https://img.shields.io/nuget/dt/Snek.svg)](https://nuget.org/packages/Snek)
 [![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
