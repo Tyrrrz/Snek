@@ -17,6 +17,8 @@
     <PackageReference Include="PowerKit" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
+    <!-- MSBuild 16.8 transitively pulls the vulnerable System.Drawing.Common 4.7.0. -->
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-rxg9-xrhp-64gj" />
   </ItemGroup>
 
   <ItemGroup>
