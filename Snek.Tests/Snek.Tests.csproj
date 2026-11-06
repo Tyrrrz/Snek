@@ -24,4 +24,11 @@
   <ItemGroup>
     <ProjectReference Include="../Snek/Snek.csproj" />
   </ItemGroup>
+
+  <Target Name="CopyMSBuildRuntimeAssemblies" AfterTargets="Build">
+    <Copy
+      SourceFiles="$(MSBuildBinPath)/Microsoft.Build.Framework.dll;$(MSBuildBinPath)/Microsoft.Build.Utilities.Core.dll"
+      DestinationFolder="$(OutDir)"
+    />
+  </Target>
 </Project>
