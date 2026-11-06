@@ -31,7 +31,6 @@
     <PackageReference
       Include="Microsoft.Build.Utilities.Core"
       VersionOverride="16.8.0"
-      IncludeAssets="compile; build; native; contentfiles; analyzers; buildtransitive"
       ExcludeAssets="runtime"
       PrivateAssets="all"
     />
