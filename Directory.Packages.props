@@ -8,7 +8,9 @@
     <PackageVersion Include="coverlet.collector" Version="10.1.0" />
     <PackageVersion Include="CSharpier.MsBuild" Version="1.2.6" />
     <PackageVersion Include="GitHubActionsTestLogger" Version="3.0.5" />
+    <!-- Must be pinned to the lowest version we can support -->
     <PackageVersion Include="Microsoft.Build.Framework" Version="16.8.0" />
+    <!-- Must be pinned to the lowest version we can support -->
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="16.8.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
     <PackageVersion Include="PolyShim" Version="2.15.0" />
