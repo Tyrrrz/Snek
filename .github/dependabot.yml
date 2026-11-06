@@ -20,3 +20,7 @@ updates:
       nuget:
         patterns:
           - "*"
+    ignore:
+      # Snek is an MSBuild task package, so it must compile against the oldest supported MSBuild
+      # version to stay loadable in older SDKs. Newer versions break the tests as well.
+      - dependency-name: "Microsoft.Build.*"
