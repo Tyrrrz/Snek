@@ -20,6 +20,3 @@ updates:
       nuget:
         patterns:
           - "*"
-    ignore:
-      # Must be pinned to the lowest possible version for compatibility with older SDKs
-      - dependency-name: "Microsoft.Build.*"

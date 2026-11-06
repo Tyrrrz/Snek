@@ -21,9 +21,10 @@
 
   <ItemGroup>
     <PackageReference Include="CSharpier.MsBuild" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Build.Framework" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Build.Framework" VersionOverride="16.8.0" PrivateAssets="all" />
     <PackageReference
       Include="Microsoft.Build.Utilities.Core"
+      VersionOverride="16.8.0"
       IncludeAssets="compile; build; native; contentfiles; analyzers; buildtransitive"
       ExcludeAssets="runtime"
       PrivateAssets="all"
