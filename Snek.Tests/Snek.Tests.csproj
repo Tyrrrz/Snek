@@ -12,9 +12,7 @@
     <PackageReference Include="CSharpier.MsBuild" PrivateAssets="all" />
     <PackageReference Include="AwesomeAssertions" />
     <PackageReference Include="GitHubActionsTestLogger" />
-    <PackageReference Include="Microsoft.Build.Utilities.Core">
-      <NoWarn>NU1902;NU1903</NoWarn>
-    </PackageReference>
+    <PackageReference Include="Microsoft.Build.Utilities.Core" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="PowerKit" />
     <PackageReference Include="xunit" />
@@ -24,11 +22,4 @@
   <ItemGroup>
     <ProjectReference Include="../Snek/Snek.csproj" />
   </ItemGroup>
-
-  <Target Name="CopyMSBuildRuntimeAssemblies" AfterTargets="Build">
-    <Copy
-      SourceFiles="$(MSBuildBinPath)/Microsoft.Build.Framework.dll;$(MSBuildBinPath)/Microsoft.Build.Utilities.Core.dll"
-      DestinationFolder="$(OutDir)"
-    />
-  </Target>
 </Project>
